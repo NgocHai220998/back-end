@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
       code: 430,
       title: 'Error',
       data: {
-        message: "Tokens do not exist or expire!"
+        message: "Email is a new required field!"
       }
     })
   } else {
@@ -36,6 +36,7 @@ module.exports = async (req, res) => {
       });
 
       if (info) {
+        // Assign a emailCode to the user
         userModel.setEmailCode({
           emailCode: code,
           email: req.body.email

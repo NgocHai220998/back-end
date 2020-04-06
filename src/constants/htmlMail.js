@@ -102,7 +102,7 @@ module.exports = (token) => {
         
                     <!-- form-activate -->
                     <div class="block" style="text-align: center;box-sizing: border-box;padding: 1em 2em;width: 100%;">
-                        <form action="http://localhost:3000/api/user/get-token-for-register" method="POST" style="margin: 0;box-sizing: border-box;">
+                        <form action="http://localhost:3000/api/users/confirm-register" method="POST" style="margin: 0;box-sizing: border-box;">
                             <input value="${token}" name="token" style="display: none">
                             <input type="submit" value="Activate account" class="btn" style="color: #ffffff;width: auto;border-radius: 1em;background-color: #36e1d6;font-size: 1em;border: none;outline: none;padding: 0.8em 1em;font-weight: bold;">
                         </form>

@@ -13,7 +13,6 @@ const userSchema = new Schema({
             firstName: String,
             lastName: String
         },
-        university: String,
         birthday: {
             date: String,
             month: String,
@@ -44,12 +43,12 @@ function createUser(user) {
             } else {
                 if (result) {
                     resolve({
-                        code: 200,
+                        code: 200, // Successfully create new user
                         data: result
                     })
                 } else {
                     resolve({
-                        code: 420
+                        code: 420 // Error
                     })
                 }
             }
@@ -58,7 +57,7 @@ function createUser(user) {
 }
 
 /**
- * 
+ * @function: to valid email
  * @param {String} email 
  */
 function validEmail(email) {
@@ -69,12 +68,12 @@ function validEmail(email) {
             } else {
                 if (result) {
                     resolve({
-                        code: 401,
+                        code: 401, // Email was registered
                         data: result
                     });
                 } else {
                     resolve({
-                        code: 405
+                        code: 200 // Email is valid
                     })
                 }
             }
@@ -94,7 +93,6 @@ function updateProfile(body) {
                     reject(new Error('Error: update profile'));
                 } else {
                     if (user) {
-                        user.information.university = body.information.university;
                         user.information.birthday.date = body.information.birthday.date;
                         user.information.birthday.month = body.information.birthday.month;
                         user.information.birthday.year = body.information.birthday.year;
@@ -130,15 +128,21 @@ function updateProfile(body) {
     })
 }
 
+/**
+ * @function: confirm to register
+ * @param {*} _token 
+ */
+
 function confirmEmail(_token) {
     return new Promise((resolve, reject) => {
+        // get information from token
         token.verify(_token).then((data) => {
             users.findOne({ email: data.email }, (err, result) => {
                 if (err) {
                     reject(new Error('Error: confirm email'));
                 } else {
                     if (result) {
-                        result.isConfirmbyEmail = true;
+                        result.isConfirmbyEmail = true; // to confirm
                         result.save((err, newUser) => {
                             if (err) {
                                 console.log(err);
@@ -146,25 +150,25 @@ function confirmEmail(_token) {
                             } else {
                                 if (newUser) {
                                     resolve({
-                                        code: 200,
+                                        code: 200, // confirm success
                                         data: newUser
                                     })
                                 } else {
                                     resolve({
-                                        code: 421
+                                        code: 421 // Err
                                     })
                                 }
                             }
                         });
                     } else {
                         resolve({
-                            code: 404
+                            code: 404 // err
                         })
                     }
                 }
             });
         }).catch((err) => {
-            console.log(err);
+            // console.log(err);
             reject(new Error('Somthing went Error!'));
         })
     });

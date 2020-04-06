@@ -7,7 +7,7 @@ module.exports = (req, res) => {
       code: 403,
       title: 'Error',
       data: {
-        message: 'Email is required...'
+        message: 'Email is a required field'
       }
     })
   } else if (!req.body.password) {
@@ -15,12 +15,13 @@ module.exports = (req, res) => {
       code: 410,
       title: 'Error',
       data: {
-        message: 'Password is required...'
+        message: 'Password is a required field'
       }
     })
   } else {
+    // to valid email
     userModel.validEmail(req.body.email).then((result) => {
-      if (result.code == 401) {
+      if (result.code == 401) { // Email is valid
         if (req.body.password == result.data.password) {
           if (result.data.isConfirmbyEmail == true) {
             jwt.sign({
@@ -43,7 +44,7 @@ module.exports = (req, res) => {
                 }
               });
             });
-          } else {
+          } else { // Email has not confirmed account to register
             res.json({
               code: 406,
               title: 'Error',
@@ -53,7 +54,7 @@ module.exports = (req, res) => {
             })
           }
           
-        } else {
+        } else { // Incorrect password!
           res.json({
             code: 411,
             title: 'Error',
@@ -62,7 +63,7 @@ module.exports = (req, res) => {
             }
           })
         }
-      } else if (result.code == 405) {
+      } else if (result.code == 405) { // Email does not exist!
         res.json({
           code: 405,
           title: 'Error',

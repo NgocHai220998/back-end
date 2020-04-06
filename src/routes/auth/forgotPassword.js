@@ -6,7 +6,7 @@ module.exports = (req, res) => {
       code: 410,
       title: 'Error',
       data: {
-        message: 'Password is required!'
+        message: 'Password is a required field'
       }
     })
   } else if (!req.body.email) {
@@ -14,7 +14,7 @@ module.exports = (req, res) => {
       code: 403,
       title: 'Error',
       data: {
-        message: 'Email is required!'
+        message: 'Email is a required field'
       }
     })
   } else if (!req.body.emailCode) {
@@ -22,7 +22,7 @@ module.exports = (req, res) => {
       code: 440,
       title: 'Error',
       data: {
-        message: 'Email code is required!'
+        message: 'emailCode is a required field'
       }
     })
   } else {

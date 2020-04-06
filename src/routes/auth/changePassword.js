@@ -1,6 +1,7 @@
 const userModel = require('../../models/userModel.js');
 
 module.exports = (req, res) => {
+  console.log("hello")
   if (!req.body.password) {
     res.json({
       code: 410,

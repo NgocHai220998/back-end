@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
             code: 400,
             title: 'error',
             data: {
-                message: "Email is required"
+                message: "Email is a required field"
             }
         })
     } else if (!req.body.password) {
@@ -15,12 +15,12 @@ module.exports = async (req, res) => {
             code: 410,
             title: 'error',
             data: {
-                message: "Password is required"
+                message: "Password is a required field"
             }
         })
     } else {
+        // Check if email already exists
         userModel.validEmail(req.body.email).then((data) => {
-
             if (data.code == 401) {
                 res.json({
                     code: 401,
@@ -29,8 +29,8 @@ module.exports = async (req, res) => {
                         message: "Email is existed!"
                     }
                 });
-            } else if (data.code == 405) {
-
+            } else if (data.code == 200) {
+                // Create a new user
                 userModel.createUser({
                     email: req.body.email,
                     password: req.body.password,
@@ -44,15 +44,15 @@ module.exports = async (req, res) => {
                 }).then(async (result) => {
                     if (result.code == 200) {
                         res.json({
-                            code: 200,
+                            code: 200, // Successfully create new user
                             title: 'success',
                             data: {
-                                message: "Create user success!",
+                                message: "Successfully create new user!",
                                 user: {
                                     information: result.data.information,
                                     userID: result.data.userID,
                                     email: result.data.email,
-                                    token: await jwt.sign({
+                                    token: await jwt.sign({ // Assign user information to the token
                                         user: {
                                             email: result.data.email,
                                             userID: result.data.userID
@@ -63,10 +63,10 @@ module.exports = async (req, res) => {
                         })
                     } else if (result.code == 420) {
                         res.json({
-                            code: 420,
+                            code: 420, // Error
                             title: 'error',
                             data: {
-                                message: "Create user fail!"
+                                message: "Creating user fail!"
                             }
                         })
                     }
