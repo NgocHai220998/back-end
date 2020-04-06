@@ -12,14 +12,14 @@ const handleForgotPassword = require('../auth/forgotPassword.js');
 
 module.exports = () => {
   router.post(constants.USER.CREATE_USER, handleCreateUser); // maintain okie
-  router.put(constants.USER.UPDATE_USER, handleUpdateProfile);
+  router.put(constants.USER.UPDATE_USER, handleUpdateProfile); // Error
   router.post(constants.USER.SEND_MAIL_REGISTER, handleSendEmailRegister); // maintain okie
   router.post(constants.USER.CONFIRM_REGISTER, handleConfirmRegister); // maintain okie
 
-  router.put(constants.USER.CHANGE_AVATAR, handleChangeAvatar);
-  router.post(constants.USER.LOGIN, handleLogin);
-  router.post(constants.USER.SEND_EMAIL_CODE, handleSendEmailCode);
-  router.put(constants.USER.CHANGE_PASSWORD, handleChangePassword);
+  router.put(constants.USER.CHANGE_AVATAR, handleChangeAvatar); // Error
+  router.post(constants.USER.LOGIN, handleLogin); // maintain okie
+  router.post(constants.USER.SEND_EMAIL_CODE, handleSendEmailCode); // maintain okie
+  router.put(constants.USER.CHANGE_PASSWORD, handleChangePassword); // Error
   router.put(constants.USER.FORGOT_PASSWORD, handleForgotPassword); // Error
   return router;
 }
