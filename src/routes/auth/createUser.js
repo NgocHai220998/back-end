@@ -35,12 +35,6 @@ module.exports = async (req, res) => {
                     email: req.body.email,
                     password: req.body.password,
                     userID: new Date().getTime(),
-                    information: {
-                        name: {
-                            firstName: req.body.information.name.firstName,
-                            lastName: req.body.information.name.lastName
-                        }
-                    }
                 }).then(async (result) => {
                     if (result.code == 200) {
                         res.json({
@@ -49,7 +43,6 @@ module.exports = async (req, res) => {
                             data: {
                                 message: "Successfully create new user!",
                                 user: {
-                                    information: result.data.information,
                                     userID: result.data.userID,
                                     email: result.data.email,
                                     token: await jwt.sign({ // Assign user information to the token

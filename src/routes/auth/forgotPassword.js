@@ -26,29 +26,39 @@ module.exports = (req, res) => {
       }
     })
   } else {
+    // forgot
     userModel.forgotPassword(req.body).then((result) => {
       if (result) {
-        if (result.result === false) {
+        if (result.code === 401) {
           res.json({
             code: 451,
             title: 'Error',
             data: {
-              message: 'Email does not match or expired!'
+              message: 'Code does not match or expired!'
             }
           })
-        } else {
+        } else if (result.code === 200) {
           res.json({
             code: 200,
             title: 'Success',
             data: {
               message: 'Forgot password success...',
+              user: result.result
+            }
+          })
+        } else if (result.code === 404) {
+          res.json({
+            code: 404,
+            title: 'Error',
+            data: {
+              message: 'Email not is register',
               user: result
             }
           })
         }
       } else {
         res.json({
-          code: 451,
+          code: 401,
           title: 'Error',
           data: {
             message: 'Forgot password fail!'

@@ -8,21 +8,6 @@ const userSchema = new Schema({
     userID: String,
     email: String,
     srcAvatar: String,
-    information: {
-        name: {
-            firstName: String,
-            lastName: String
-        },
-        birthday: {
-            date: String,
-            month: String,
-            year: String
-        },
-        address: {
-            city: String,
-            country: String
-        }
-    },
     isConfirmbyEmail: {
         type: Boolean,
         default: false
@@ -82,53 +67,6 @@ function validEmail(email) {
 }
 
 /**
- * 
- * @param {req.body} body 
- */
-function updateProfile(body) {
-    return new Promise((resolve, reject) => {
-        token.verify(body.token).then((data) => {
-            users.findOne({ email: data.user.email }, (err, user) => {
-                if (err) {
-                    reject(new Error('Error: update profile'));
-                } else {
-                    if (user) {
-                        user.information.birthday.date = body.information.birthday.date;
-                        user.information.birthday.month = body.information.birthday.month;
-                        user.information.birthday.year = body.information.birthday.year;
-                        user.information.address.city = body.information.address.city;
-                        user.information.address.country = body.information.address.country;
-                        user.save((err, result) => {
-                            if (err) {
-                                reject(new Error('Error: update profile'));
-                            } else {
-                                if (result) {
-                                    resolve({
-                                        code: 200,
-                                        data: result
-                                    });
-                                } else {
-                                    resolve({
-                                        code: 421
-                                    })
-                                }
-                            }
-                        })
-                    } else {
-                        resolve({
-                            code: 404
-                        })
-                    }
-                }
-            })
-        }).catch((err) => {
-            console.log(err);
-            reject(new Error('Something went Error...'));
-        })
-    })
-}
-
-/**
  * @function: confirm to register
  * @param {*} _token 
  */
@@ -173,85 +111,10 @@ function confirmEmail(_token) {
         })
     });
 }
-
-function changeAvatar(body) {
-    return new Promise((resolve, reject) => {
-        token.verify(body.token).then((data) => {
-            users.findOne({ email: data.user.email }, (err, user) => {
-                if (err) {
-                    console.log(err);
-                    reject(new Error('Error: change avatar'));
-                } else {
-                    if (user) {
-                        user.srcAvatar = body.srcAvatar;
-                        user.save((err, result) => {
-                            if (err) {
-                                console.log(err);
-                                reject(new Error('Error: change avatar'));
-                            } else {
-                                if (result) {
-                                    resolve({
-                                        code: 200,
-                                        data: result
-                                    })
-                                } else {
-                                    resolve({
-                                        code: 421
-                                    })
-                                }
-                            }
-                        })
-                    } else {
-                        resolve({
-                            code: 404
-                        })
-                    }
-
-                }
-            })
-        }).catch((err) => {
-            console.log(err + '');
-            reject(new Error('Something went Error...'));
-        })
-    });
-}
-
-function changePassword(body) {
-    return new Promise((resolve, reject) => {
-        token.verify(body.token).then((data) => {
-            users.findOne({ email: data.user.email }, (err, user) => {
-                if (err) {
-                    console.log(err);
-                    reject(new Error('Error: change password'));
-                } else {
-                    if (user) {
-                        if (user.emailCode == body.emailCode) {
-                            user.password = body.password;
-                            user.save((error, result) => {
-                                if (error) {
-                                    console.log(error);
-                                    reject(new Error('Something went error'));
-                                } else {
-                                    if (result) {
-                                        resolve(result);
-                                    } else {
-                                        console.log('Something went error!')
-                                    }
-                                }
-                            })
-                        } else {
-                            resolve({ result: false });
-                        }
-                    } else {
-                        console.log('Something went error')
-                    }
-
-                }
-            })
-        })
-    })
-}
-
+/**
+ * @function: Change password
+ * @param {*} body 
+ */
 function forgotPassword(body) {
     return new Promise((resolve, reject) => {
         users.findOne({ email: body.email }, (err, user) => {
@@ -267,14 +130,21 @@ function forgotPassword(body) {
                                 console.log(error);
                                 reject(new Error('Something went error'));
                             } else {
-                                resolve(result);
+                                resolve({
+                                    result: result,
+                                    code: 200 // Okie
+                                });
                             }
                         })
                     } else {
-                        resolve({ result: false });
+                        resolve({ 
+                            code: 401, // code is not match
+                        });
                     }
                 } else {
-                    console.log('Something went error')
+                    resolve({ 
+                        code: 404, // code is not match
+                    });
                 }
 
             }
@@ -321,7 +191,6 @@ function getInfoUserByUserID(userID) {
                     resolve({
                         code: 200,
                         data: {
-                            information: user.information,
                             email: user.email,
                             userID: user.userID,
                             srcAvatar: user.srcAvatar
@@ -343,10 +212,7 @@ module.exports = {
     createUser,
     validEmail,
     users,
-    updateProfile,
     confirmEmail,
-    changeAvatar,
-    changePassword,
     forgotPassword,
     setEmailCode,
     getInfoUserByUserID
