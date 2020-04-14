@@ -39,6 +39,10 @@ module.exports = (req, res) => {
                     email: result.data.email,
                     token: token,
                     userID: result.data.userID,
+                    server: {
+                      serverJP: result.data.serverJP,
+                      serverEN: result.data.serverEN
+                    }
                   }
                 }
               });

@@ -7,10 +7,83 @@ const userSchema = new Schema({
     password: String,
     userID: String,
     email: String,
-    srcAvatar: String,
     isConfirmbyEmail: {
         type: Boolean,
         default: false
+    },
+    serverJP: {
+        isCreateMain: {
+            type: Boolean,
+            default: false
+        },
+        main: {
+            userName: String,
+            kind: String,
+            martialArt: Number,
+            magic: Number,
+            skill: Number,
+            avoid: Number,
+            propUp: Number,
+            exactly: Number,
+            critical: Number,
+            position: {
+                type: Number,
+                default: 2
+            },
+            srcImage: String
+        },
+        pets: [{
+            name: String,
+            kind: String,
+            martialArt: Number,
+            magic: Number,
+            skill: Number,
+            avoid: Number,
+            propUp: Number,
+            exactly: Number,
+            critical: Number,
+            position: {
+                type: Number,
+                default: -1
+            }
+        }]
+    },
+    serverEN: {
+        isCreateMain: {
+            type: Boolean,
+            default: false
+        },
+        main: {
+            userName: String,
+            kind: String,
+            martialArt: Number,
+            magic: Number,
+            skill: Number,
+            avoid: Number,
+            propUp: Number,
+            exactly: Number,
+            critical: Number,
+            position: {
+                type: Number,
+                default: 2
+            },
+            srcImage: String
+        },
+        pets: [{
+            name: String,
+            kind: String,
+            martialArt: Number,
+            magic: Number,
+            skill: Number,
+            avoid: Number,
+            propUp: Number,
+            exactly: Number,
+            critical: Number,
+            position: {
+                type: Number,
+                default: -1
+            }
+        }]
     }
 })
 
@@ -152,6 +225,10 @@ function forgotPassword(body) {
     })
 }
 
+/**
+ * @function: send a code to check user
+ * @param : data 
+ */
 function setEmailCode(data) {
     users.findOne({ email: data.email }, (err, user) => {
         if (err) {
@@ -181,9 +258,13 @@ function setEmailCode(data) {
     })
 }
 
-function getInfoUserByUserID(userID) {
+/**
+ * @function: get info an user by UserID
+ * @param: userID 
+ */
+function getInfoUserByEmail(email) {
     return new Promise((resolve, reject) => {
-        users.findOne({ userID: userID }, (err, user) => {
+        users.findOne({ userID: email }, (err, user) => {
             if (err) {
                 reject(new Error('Error: get info user by userID'));
             } else {
@@ -191,9 +272,10 @@ function getInfoUserByUserID(userID) {
                     resolve({
                         code: 200,
                         data: {
-                            email: user.email,
-                            userID: user.userID,
-                            srcAvatar: user.srcAvatar
+                            email: newUser.email,
+                            main: newUser.main,
+                            pets: newUser.pets,
+                            userID: newUser.userID
                         }
                     })
                 } else {
@@ -202,6 +284,56 @@ function getInfoUserByUserID(userID) {
                     })
                 }
             }
+        })
+    })
+}
+
+/**
+ * @function: create main to first login 
+ * @param: data 
+ */
+function createMain(data) {
+    return new Promise((resolve, reject) => {
+        token.verify(data._token).then((res) => {
+            users.findOne({ email: res.user.email }, (err, result) => {
+                if (err) {
+                    reject(new Error('err: createMain'))
+                } else {
+                    if (result) { // Tim thay user
+                        result.serverJP.isCreateMain = true
+                        result.serverJP.main = {
+                            ...result.main,
+                            ...data.main
+                        }
+                        result.save((error, newUser) => {
+                            if (error) {
+                                reject(new Error('Err Create Main save'))
+                            } else if (newUser) {
+                                resolve({
+                                    code: 200,
+                                    data: {
+                                        email: newUser.email,
+                                        userID: newUser.userID,
+                                        server: {
+                                            serverJP: newUser.serverJP,
+                                            serverEN: newUser.serverEN
+                                        },
+                                        token: data._token
+                                    }
+                                })
+                            } else {
+                                resolve({
+                                    code: 403 // Error cant not save user
+                                })
+                            }
+                        })
+                    } else {
+                        resolve({
+                            code: 404 // Khong tim thay user
+                        })
+                    }
+                }
+            })
         })
     })
 }
@@ -215,5 +347,6 @@ module.exports = {
     confirmEmail,
     forgotPassword,
     setEmailCode,
-    getInfoUserByUserID
+    getInfoUserByEmail,
+    createMain
 }

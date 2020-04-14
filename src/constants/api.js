@@ -1,7 +1,8 @@
 module.exports = () => {
     return {
         ROOT_API: {
-            AUTH: '/api/users' // /api/user -> /api/users
+            AUTH: '/api/users', // /api/user -> /api/users
+            MAIN: '/api/main/:email'
         },
         USER: {
             CREATE_USER: '/', // /create-user -> /  note: Create a new user (method: post)
@@ -17,6 +18,9 @@ module.exports = () => {
             SEND_EMAIL_CODE: '/send-email-code',
             CHANGE_PASSWORD: '/change-password',
             FORGOT_PASSWORD: '/forgot-password'
+        },
+        MAIN: {
+            CREATE_MAIN: '/' // note Create a new Main for user first login
         }
     }
 }
