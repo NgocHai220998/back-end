@@ -11,80 +11,41 @@ const userSchema = new Schema({
         type: Boolean,
         default: false
     },
-    serverJP: {
-        isCreateMain: {
-            type: Boolean,
-            default: false
-        },
-        main: {
-            userName: String,
-            kind: String,
-            martialArt: Number,
-            magic: Number,
-            skill: Number,
-            avoid: Number,
-            propUp: Number,
-            exactly: Number,
-            critical: Number,
-            position: {
-                type: Number,
-                default: 2
-            },
-            srcImage: String
-        },
-        pets: [{
-            name: String,
-            kind: String,
-            martialArt: Number,
-            magic: Number,
-            skill: Number,
-            avoid: Number,
-            propUp: Number,
-            exactly: Number,
-            critical: Number,
-            position: {
-                type: Number,
-                default: -1
-            }
-        }]
+    isCreateMain: {
+        type: Boolean,
+        default: false
     },
-    serverEN: {
-        isCreateMain: {
-            type: Boolean,
-            default: false
+    main: {
+        userName: String,
+        kind: String,
+        martialArt: Number,
+        magic: Number,
+        skill: Number,
+        avoid: Number,
+        propUp: Number,
+        exactly: Number,
+        critical: Number,
+        position: {
+            type: Number,
+            default: 2
         },
-        main: {
-            userName: String,
-            kind: String,
-            martialArt: Number,
-            magic: Number,
-            skill: Number,
-            avoid: Number,
-            propUp: Number,
-            exactly: Number,
-            critical: Number,
-            position: {
-                type: Number,
-                default: 2
-            },
-            srcImage: String
-        },
-        pets: [{
-            name: String,
-            kind: String,
-            martialArt: Number,
-            magic: Number,
-            skill: Number,
-            avoid: Number,
-            propUp: Number,
-            exactly: Number,
-            critical: Number,
-            position: {
-                type: Number,
-                default: -1
-            }
-        }]
-    }
+        srcImage: String
+    },
+    pets: [{
+        name: String,
+        kind: String,
+        martialArt: Number,
+        magic: Number,
+        skill: Number,
+        avoid: Number,
+        propUp: Number,
+        exactly: Number,
+        critical: Number,
+        position: {
+            type: Number,
+            default: -1
+        }
+    }]
 })
 
 const users = mongoose.model('user', userSchema);
@@ -294,14 +255,14 @@ function getInfoUserByEmail(email) {
  */
 function createMain(data) {
     return new Promise((resolve, reject) => {
-        token.verify(data._token).then((res) => {
+        token.verify(data.token).then((res) => {
             users.findOne({ email: res.user.email }, (err, result) => {
                 if (err) {
                     reject(new Error('err: createMain'))
                 } else {
                     if (result) { // Tim thay user
-                        result.serverJP.isCreateMain = true
-                        result.serverJP.main = {
+                        result.isCreateMain = true
+                        result.main = {
                             ...result.main,
                             ...data.main
                         }
@@ -314,11 +275,9 @@ function createMain(data) {
                                     data: {
                                         email: newUser.email,
                                         userID: newUser.userID,
-                                        server: {
-                                            serverJP: newUser.serverJP,
-                                            serverEN: newUser.serverEN
-                                        },
-                                        token: data._token
+                                        main: newUser.main,
+                                        pets: newUser.pets,
+                                        token: data.token
                                     }
                                 })
                             } else {

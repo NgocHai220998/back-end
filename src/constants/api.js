@@ -2,7 +2,10 @@ module.exports = () => {
     return {
         ROOT_API: {
             AUTH: '/api/users', // /api/user -> /api/users
-            MAIN: '/api/main/:email'
+            MAIN: '/api/main/:email',
+            WORD: '/api/word',
+            EXAMPLE: '/api/example',
+            BADWORD: '/api/badword'
         },
         USER: {
             CREATE_USER: '/', // /create-user -> /  note: Create a new user (method: post)
@@ -21,6 +24,24 @@ module.exports = () => {
         },
         MAIN: {
             CREATE_MAIN: '/' // note Create a new Main for user first login
+        },
+        WORD: {
+            CREATE_WORD: '/',
+            UPDATE_WORD: '/:ID',
+            DELETE_WORD: '/:ID',
+            GET_WORDS: '/:email'
+        },
+        EXAMPLE: {
+            CREATE_EXAMPLE: '/',
+            UPDATE_EXAMPLE: '/:ID',
+            DELETE_EXAMPLE: '/:ID',
+            GET_EXAMPLES: '/:email'
+        },
+        BADWORD: {
+            CREATE_BADWORD: '/',
+            UPDATE_BADWORD: '/:ID',
+            DELETE_BADWORD: '/:ID',
+            GET_BADWORDS: '/:email'
         }
     }
 }

@@ -1,7 +1,7 @@
 const userModel = require('../../models/userModel.js');
 
 module.exports = (req, res) => {
-    if (!req.body._token) {
+    if (!req.body.token) {
         res.json({
             code: 400,
             title: 'error',
