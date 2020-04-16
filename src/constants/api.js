@@ -12,7 +12,7 @@ module.exports = () => {
             SEND_MAIL_REGISTER: '/send-email-register', // note: send message to confirm (method: post)
             GET_USERS: '/',   // note: Get users in databases (method: get)
             UPDATE_USER: '/:ID',  // /update-profile -> /:ID  note: Update a user by ID (method: put)
-            GET_USER: '/:ID', // method get,
+            GET_USER_BY_EMAIL: '/:email', // method get,
             DELETE_USER: '/:ID', // Delete a user by ID (method: delete)
             CONFIRM_REGISTER: '/confirm-register', // method: post
             CHANGE_AVATAR: '/change-avatar',
@@ -20,7 +20,8 @@ module.exports = () => {
             LOGIN: '/login',
             SEND_EMAIL_CODE: '/send-email-code',
             CHANGE_PASSWORD: '/change-password',
-            FORGOT_PASSWORD: '/forgot-password'
+            FORGOT_PASSWORD: '/forgot-password',
+            UPDATE_POSITION: '/position'
         },
         MAIN: {
             CREATE_MAIN: '/' // note Create a new Main for user first login

@@ -25,6 +25,7 @@ const userSchema = new Schema({
         propUp: Number,
         exactly: Number,
         critical: Number,
+        hp: Number,
         position: {
             type: Number,
             default: 2
@@ -32,7 +33,7 @@ const userSchema = new Schema({
         srcImage: String
     },
     pets: [{
-        name: String,
+        userName: String,
         kind: String,
         martialArt: Number,
         magic: Number,
@@ -41,10 +42,12 @@ const userSchema = new Schema({
         propUp: Number,
         exactly: Number,
         critical: Number,
+        hp: Number,
         position: {
             type: Number,
             default: -1
-        }
+        },
+        srcImage: String
     }]
 })
 
@@ -297,7 +300,67 @@ function createMain(data) {
     })
 }
 
+/**
+ * 
+ * @param : data 
+ */
+function updatePosition (data) {
+    return new Promise((resolve, reject) => {
+        token.verify(data.token).then((dataToken) => {
+            users.findOne({ email: dataToken.user.email }, (err, result) => {
+                if (err) {
+                    reject(new Error('Somthing err in Update position'))
+                } else {
+                    result.main.position = data.main.position
+                    if (result.pets && data.pets) {
+                        for (let i = 0; i < result.pets.length; ++i) {
+                            for (let j = 0; j < data.pets.length; ++j) {
+                                if (data.pets[j].kind === result.pets[i].kind) {
+                                    result.pets[i].position = data.pets[j].position
+                                }
+                            }
+                        }
+                    }
+                    result.save((err, res) => {
+                        if (err) {
+                            reject(new Error('err save in updataPosition'))
+                        } else {
+                            resolve({
+                                code: 200,
+                                main: res.main,
+                                pets: res.pets
+                            })
+                        }
+                    })
+                }
+            })
+        })
+    })
+}
 
+
+/**
+ * 
+ */
+function getUserByEmail (email) {
+    return new Promise((resolve, reject) => {
+        users.findOne({ email, email }, (err, data) => {
+            if (err) {
+                reject(new Error('somthing err in getUserByEmail'))
+            } else {
+                console.log(email)
+                resolve({
+                    code: 200,
+                    user: {
+                        main: data.main,
+                        pets: data.pets,
+                        email: data.email
+                    }
+                })
+            }
+        })
+    })
+}
 
 module.exports = {
     createUser,
@@ -307,5 +370,7 @@ module.exports = {
     forgotPassword,
     setEmailCode,
     getInfoUserByEmail,
-    createMain
+    createMain,
+    updatePosition,
+    getUserByEmail
 }
