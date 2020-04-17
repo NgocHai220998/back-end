@@ -23,4 +23,7 @@ module.exports = (req, res) => {
     }).catch((err) => {
       console.log(err)
     })
+    .catch((err) => {
+      res.statusCode(400).send('err')
+    })
 }

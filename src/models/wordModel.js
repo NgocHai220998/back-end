@@ -22,20 +22,29 @@ const words = mongoose.model('word', wordSchema);
 function createWord(body) {
   return new Promise((resolve, reject) => {
     token.verify(body.token).then((res) => {
-      const newWord = {
-        email: res.user.email,
-        ...body.data
-      }
-      words.create(newWord, (err, result) => {
-        if (err) {
-          reject(new Error('Can not save word in Create Word'))
-        } else {
-          resolve({
-            code: 200,
-            word: result
-          })
+      if (res) {
+        const newWord = {
+          email: res.user.email,
+          ...body.data
         }
-      })
+        words.create(newWord, (err, result) => {
+          if (err) {
+            resolve({
+              code: 404
+            })
+            reject(new Error('Can not save word in Create Word'))
+          } else {
+            resolve({
+              code: 200,
+              word: result
+            })
+          }
+        })
+      } else {
+        resolve({
+          code: 404
+        })
+      }
     })
   })
 }
@@ -48,6 +57,9 @@ function deleteWord (_id) {
   return new Promise((resolve, reject) => {
     words.deleteOne({ _id: _id }, (err, result) => {
       if (err) {
+        resolve({
+          code: 404
+        })
         reject(new Error('Can not delete in delete Word'))
       } else {
         resolve({
@@ -67,8 +79,11 @@ function updateWord (body, _id) {
   return new Promise((resolve, reject) => {
     words.findOne({ _id: _id }, (err, word) => {
       if (err) {
+        resolve({
+          code: 404
+        })
         reject(new Error('not found word in updateWord'))
-      } else {
+      } else if (word) {
         word.vocabulary = body.data.vocabulary
         word.explain = body.data.explain
         word.description = body.data.description
@@ -78,6 +93,9 @@ function updateWord (body, _id) {
         word.example4 = body.data.example4
         word.save((err, newWord) => {
           if (err) {
+            resolve({
+              code: 404
+            })
             reject(new Error('can not save in updateWord'))
           } else {
             resolve({
@@ -85,6 +103,10 @@ function updateWord (body, _id) {
               word: newWord
             })
           }
+        })
+      } else {
+        resolve({
+          code: 404
         })
       }
     })
@@ -96,6 +118,9 @@ function getWords (email) {
   return new Promise((resolve, reject) => {
     words.find({ email: email}, (err, newWords) => {
       if (err) {
+        resolve({
+          code: 404
+        })
         reject(new Error('Somethings wrong in getWords'))
       } else {
         resolve({

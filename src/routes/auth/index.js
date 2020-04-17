@@ -8,13 +8,14 @@ const handleSendEmailCode = require('../auth/sendEmailCode.js');
 const handleForgotPassword = require('../auth/forgotPassword.js');
 const handleUpdatePosition = require('../auth/updatePosition.js');
 const handleGetUserByEmail = require('../auth/getUserByEmail.js');
+const handleUpdateProfile = require('../auth/updateProfile.js');
 
 
 module.exports = () => {
   router.post(constants.USER.CREATE_USER, handleCreateUser); // maintain okie
   router.post(constants.USER.SEND_MAIL_REGISTER, handleSendEmailRegister); // maintain okie
   router.post(constants.USER.CONFIRM_REGISTER, handleConfirmRegister); // maintain okie
-
+  router.put(constants.USER.UPDATE_PROFILE, handleUpdateProfile);
   router.post(constants.USER.LOGIN, handleLogin); // maintain okie
   router.post(constants.USER.SEND_EMAIL_CODE, handleSendEmailCode); // maintain okie
   router.post(constants.USER.FORGOT_PASSWORD, handleForgotPassword); // Error

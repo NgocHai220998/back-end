@@ -5,7 +5,8 @@ module.exports = () => {
             MAIN: '/api/main/:email',
             WORD: '/api/word',
             EXAMPLE: '/api/example',
-            BADWORD: '/api/badword'
+            BADWORD: '/api/badword',
+            RANK: '/api/rank'
         },
         USER: {
             CREATE_USER: '/', // /create-user -> /  note: Create a new user (method: post)
@@ -21,7 +22,8 @@ module.exports = () => {
             SEND_EMAIL_CODE: '/send-email-code',
             CHANGE_PASSWORD: '/change-password',
             FORGOT_PASSWORD: '/forgot-password',
-            UPDATE_POSITION: '/position'
+            UPDATE_POSITION: '/position',
+            UPDATE_PROFILE: '/profile/:email'
         },
         MAIN: {
             CREATE_MAIN: '/' // note Create a new Main for user first login
@@ -43,6 +45,9 @@ module.exports = () => {
             UPDATE_BADWORD: '/:ID',
             DELETE_BADWORD: '/:ID',
             GET_BADWORDS: '/:email'
+        },
+        RANK: {
+            GET_RANKS: '/'
         }
     }
 }

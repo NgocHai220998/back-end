@@ -1,4 +1,5 @@
 const userModel = require('../../models/userModel.js');
+const rankModel = require('../../models/rankModel.js');
 
 module.exports = (req, res) => {
     if (!req.body.token) {
@@ -20,14 +21,22 @@ module.exports = (req, res) => {
     } else {
       userModel.createMain(req.body).then((result) => {
         if (result.code === 200) {
-            res.json({
-                code: 200,
-                title: 'Success',
-                data: {
-                    message: 'Create the main successfully',
-                    user: result.data
-                }
-            })
+            rankModel.addNewUser({
+                userName: result.data.main.userName,
+                email: result.data.email,
+                rank: 10
+            }).then(resultRank => {
+                res.json({
+                    code: 200,
+                    title: 'Success',
+                    data: {
+                        message: 'Create the main successfully',
+                        user: result.data
+                    }
+                })
+            }).catch((err) => {
+                res.statusCode(400).send('err')
+              })
         } else if (result.code === 404) {
             res.json({
                 code: 404,

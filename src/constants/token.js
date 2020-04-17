@@ -24,7 +24,9 @@ function verify (token) {
   return new Promise((resolve, reject) => {
     jwt.verify(token, 'secretkey', (err, data) => {
       if (err) {
-        console.log(err);
+        resolve({
+          code: 404
+        })
         reject(new Error('Something went Error...'));
       } else {
         resolve(data);

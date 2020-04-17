@@ -1,36 +1,35 @@
-const exampleModel = require('../../models/exampleModel.js');
+const userModel = require('../../models/userModel.js');
 
 module.exports = (req, res) => {
     if (!req.body.token) {
       res.json({
         code: 403,
-        title: 'Error',
+        title: 'Err',
         data: {
-          message: 'token is a required field'
+          message: 'Token is a required field'
         }
       })
     } else {
-      exampleModel.createExample(req.body).then((result) => {
+      userModel.updateProfile(req.body).then((result) => {
         if (result.code === 200) {
           res.json({
             code: 200,
             title: 'Success',
             data: {
-              message: 'Create example success',
-              example: result.example
+              message: 'Update profile okie',
             }
           })
         } else {
           res.json({
             code: 403,
-            title: 'Error',
+            title: 'Err',
             data: {
-              message: 'fail'
+              message: 'Update err'
             }
           })
         }
       }).catch((err) => {
-        console.log(err)
+        res.statusCode(400).send('err')
       })
     }
 }
