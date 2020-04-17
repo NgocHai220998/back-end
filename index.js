@@ -8,7 +8,7 @@ const morgan = require('morgan')
 app.use(morgan('dev'))
 
 const cors = require('cors')
-const whitelist = ['http://localhost:8080', 'https://game-language.herokuapp.com/']
+const whitelist = ['http://localhost:8080', 'https://game-language.herokuapp.com/', undefined, 'null']
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -32,6 +32,7 @@ app.set('view engine', 'ejs')
 app.get('/', (req, res) => {
   res.render('test.ejs')
 })
+
 
 const PORT = process.env.PORT || 3000;
 
