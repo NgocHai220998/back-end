@@ -8,10 +8,63 @@ const userSchema = new Schema({
     userID: String,
     email: String,
     profile: {
-        rank: Number,
+        rank: {
+            type: Number,
+            default: 2020
+        },
         famePoint: {
             type: Number,
+            default: 0
+        },
+        money: {
+            type: Number,
             default: 2000
+        },
+        exp: {
+            type: Number,
+            default: 0
+        },
+        diamond: {
+            type: Number,
+            default: 0
+        },
+        level: {
+            type: Number,
+            default: 1
+        },
+        technicalPoint: {
+            index: {
+                type: Number,
+                default: 0
+            },
+            martialArt: {
+                type: Number,
+                default: 0
+            },
+            avoid: {
+                type: Number,
+                default: 0
+            },
+            propUp: {
+                type: Number,
+                default: 0
+            },
+            critical: {
+                type: Number,
+                default: 0
+            },
+            hp: {
+                type: Number,
+                default: 0
+            },
+            armor: {
+                type: Number,
+                default: 0
+            }
+        },
+        expNextLevel: {
+            type: Number,
+            default: 200
         }
     },
     isConfirmbyEmail: {
@@ -26,13 +79,11 @@ const userSchema = new Schema({
         userName: String,
         kind: String,
         martialArt: Number,
-        magic: Number,
-        skill: Number,
         avoid: Number,
         propUp: Number,
-        exactly: Number,
         critical: Number,
         hp: Number,
+        armor: Number,
         position: {
             type: Number,
             default: 2
@@ -43,13 +94,11 @@ const userSchema = new Schema({
         userName: String,
         kind: String,
         martialArt: Number,
-        magic: Number,
-        skill: Number,
         avoid: Number,
         propUp: Number,
-        exactly: Number,
         critical: Number,
         hp: Number,
+        armor: Number,
         position: {
             type: Number,
             default: -1
@@ -313,7 +362,8 @@ function createMain(data) {
                                         userID: newUser.userID,
                                         main: newUser.main,
                                         pets: newUser.pets,
-                                        token: data.token
+                                        token: data.token,
+                                        profile: newUser.profile
                                     }
                                 })
                             } else {
@@ -432,7 +482,7 @@ function updateProfile (data) {
                     } else if (user) {
                         user.profile = {
                             ...user.profile,
-                            ...data.data
+                            ...data.profile
                         }
                         user.save((err, updatedUser) => {
                             if (err) {

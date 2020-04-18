@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const users = require('../models/userModel.js');
 const Schema = mongoose.Schema;
 
 const rankSchema = new Schema({
@@ -14,6 +15,40 @@ const rankSchema = new Schema({
 })
 
 const ranks = mongoose.model('rank', rankSchema);
+
+function setRankUser (user, rank) {
+  return new Promise((resolve, reject) => {
+    users.users.findOne({ email: user.email }, (err, userData) => {
+      if (err) {
+        resolve({
+          code: 404
+        })
+      } else if (userData) {
+        userData.profile.rank = rank
+        userData.save((err, newUser) => {
+          if (err) {
+            resolve({
+              code: 404
+            })
+          } else if (newUser) {
+            resolve({
+              code: 200,
+              user: newUser
+            })
+          } else {
+            resolve({
+              code: 404
+            })
+          }
+        })
+      } else {
+        resolve({
+          code: 404
+        })
+      }
+    })
+  })
+}
 
 
 function addNewUser (user) {
@@ -34,14 +69,16 @@ function addNewUser (user) {
               reject(new Error('err create a new rank in addNewRank'))
             } else {
               if (rank) {
-                rank.listRank.push({
-                  ...user,
-                  rank: rank.listRank.length + 1
-                })
-                rank.save((err, result) => {
-                  resolve({
-                    code: 200,
-                    rank: result
+                setRankUser(user, rank.listRank.length + 1).then((result) => {
+                  rank.listRank.push({
+                    ...user,
+                    rank: rank.listRank.length + 1
+                  })
+                  rank.save((err, newResult) => {
+                    resolve({
+                      code: 200,
+                      rank: newResult
+                    })
                   })
                 })
               } else {
@@ -51,7 +88,7 @@ function addNewUser (user) {
               }
             }
           })
-        } else {
+        } else if (!res[0] && user !== undefined) {
           const newRank = {
             name: 'hainn',
             listRank: []
@@ -71,20 +108,22 @@ function addNewUser (user) {
                   reject(new Error('err create a new rank in addNewRank'))
                 } else {
                   if (rank) {
-                    user.rank = 1
-                    rank.listRank.push(user)
-                    rank.save((err, result) => {
-                      if (err) {
-                        resolve({
-                          code: 404
-                        })
-                        reject(new Error('err'))
-                      } else {
-                        resolve({
-                          code: 200,
-                          rank: result
-                        })
-                      }
+                    setRankUser(user, 1).then((result) => {
+                      user.rank = 1
+                      rank.listRank.push(user)
+                      rank.save((err, newResult) => {
+                        if (err) {
+                          resolve({
+                            code: 404
+                          })
+                          reject(new Error('err'))
+                        } else {
+                          resolve({
+                            code: 200,
+                            rank: newResult
+                          })
+                        }
+                      })
                     })
                   } else {
                     resolve({
@@ -109,18 +148,19 @@ function getRanks () {
           code: 404
         })
         reject(new Error('Err add new user in rankModel'))
-      } else {
+      } else if (res) {
         resolve({
           code: 200,
           rank: res
+        })
+      } else {
+        resolve({
+          code: 404
         })
       }
     })
   })
 }
-
-addNewUser()
-
 
 module.exports = {
   ranks,

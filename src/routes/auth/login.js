@@ -41,7 +41,8 @@ module.exports = (req, res) => {
                     userID: result.data.userID,
                     main: result.data.main,
                     pets: result.data.pets,
-                    isCreateMain: result.data.isCreateMain
+                    isCreateMain: result.data.isCreateMain,
+                    profile: result.data.profile
                   }
                 }
               });
