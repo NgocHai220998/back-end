@@ -41,7 +41,10 @@ module.exports = async (req, res) => {
           code: 200, // Send confirm message to register ok!
           title: 'Success',
           data: {
-            message: 'Please check your mail to confirm!'
+            message: 'Please check your mail to confirm!',
+            data: {
+              email: req.body.email
+            }
           }
         })
       } else {
