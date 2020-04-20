@@ -32,7 +32,7 @@ module.exports = (code) => {
               <div class="block" style="box-sizing: border-box;padding: 1em 2em;width: 100%;">
                   <div class="font" style="font-size: 1em;font-family: 'Lato', Tahoma, Verdana, Segoe, sans-serif;line-height: 1.5em;color: #4c4c4c;">The Learn Japanese Team</div>
                   <div class="font" style="font-size: 1em;font-family: 'Lato', Tahoma, Verdana, Segoe, sans-serif;line-height: 1.5em;color: #4c4c4c;">
-                      <a href="https://dev-learn-backend.herokuapp.com">https://dev-learn-backend.herokuapp.com</a>
+                      <a href="https://backend-lg.herokuapp.com">https://backend-lg.herokuapp.com</a>
                   </div>
               </div>
               <div class="block" style="padding-top: 0.5em;padding-bottom: 0.5em;box-sizing: border-box;padding: 1em 2em;width: 100%;">
