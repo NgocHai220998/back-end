@@ -1,35 +1,36 @@
-const userModel = require('../../models/userModel.js');
+const wordModel = require('../../models/wordModel.js');
 
 module.exports = (req, res) => {
     if (!req.body.token) {
       res.json({
         code: 403,
-        title: 'Err',
+        title: 'Error',
         data: {
-          message: 'Token is a required field'
+          message: 'token is a required field'
         }
       })
     } else {
-      userModel.updateProfile(req.body).then((result) => {
+      wordModel.createWord(req.body).then((result) => {
         if (result.code === 200) {
           res.json({
             code: 200,
             title: 'Success',
             data: {
-              message: 'Update profile okie',
+              message: 'Create word success',
+              word: result.word
             }
           })
         } else {
           res.json({
             code: 403,
-            title: 'Err',
+            title: 'Error',
             data: {
-              message: 'Update err'
+              message: 'fail'
             }
           })
         }
       }).catch((err) => {
-        res.statusCode(400).send('err')
+        console.log(err)
       })
     }
 }

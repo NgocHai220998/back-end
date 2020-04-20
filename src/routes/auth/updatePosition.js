@@ -10,13 +10,15 @@ module.exports = (req, res) => {
         }
       })
     } else {
-      userModel.updateProfile(req.body).then((result) => {
+      userModel.updatePosition(req.body).then((result) => {
         if (result.code === 200) {
           res.json({
             code: 200,
             title: 'Success',
             data: {
-              message: 'Update profile okie',
+              message: 'Update ok',
+              main: result.main,
+              pets: result.pets
             }
           })
         } else {

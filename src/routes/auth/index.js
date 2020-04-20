@@ -1,24 +1,25 @@
 const router = require('express').Router();
 const constants = require('../../constants/api.js')();
 const handleCreateUser = require('./createUser.js');
-const handleSendmail = require('./sendMail.js');
-const handleUpdateProfile = require('./updateProfile.js');
-const handleGetTokenForRegister = require('./getTokenForRegister');
-const handleChangeAvatar = require('../auth/changeAvatar.js');
+const handleSendEmailRegister = require('./sendEmailRegister.js');
+const handleConfirmRegister = require('./confirmRegister');
 const handleLogin = require('../auth/login.js');
 const handleSendEmailCode = require('../auth/sendEmailCode.js');
-const handleChangePassword = require('../auth/changePassword.js');
 const handleForgotPassword = require('../auth/forgotPassword.js');
+const handleUpdatePosition = require('../auth/updatePosition.js');
+const handleGetUserByEmail = require('../auth/getUserByEmail.js');
+const handleUpdateProfile = require('../auth/updateProfile.js');
+
 
 module.exports = () => {
-  router.post(constants.USER.CREATE_USER, handleCreateUser);
-  router.post(constants.USER.SEND_MAIL_REGISTER, handleSendmail);
+  router.post(constants.USER.CREATE_USER, handleCreateUser); // maintain okie
+  router.post(constants.USER.SEND_MAIL_REGISTER, handleSendEmailRegister); // maintain okie
+  router.post(constants.USER.CONFIRM_REGISTER, handleConfirmRegister); // maintain okie
   router.put(constants.USER.UPDATE_PROFILE, handleUpdateProfile);
-  router.post(constants.USER.GET_TOKEN_FOR_REGISTER, handleGetTokenForRegister);
-  router.put(constants.USER.CHANGE_AVATAR, handleChangeAvatar);
-  router.post(constants.USER.LOGIN, handleLogin);
-  router.post(constants.USER.SEND_EMAIL_CODE, handleSendEmailCode);
-  router.put(constants.USER.CHANGE_PASSWORD, handleChangePassword);
-  router.put(constants.USER.FORGOT_PASSWORD, handleForgotPassword);
+  router.post(constants.USER.LOGIN, handleLogin); // maintain okie
+  router.post(constants.USER.SEND_EMAIL_CODE, handleSendEmailCode); // maintain okie
+  router.post(constants.USER.FORGOT_PASSWORD, handleForgotPassword); // Error
+  router.put(constants.USER.UPDATE_POSITION, handleUpdatePosition);
+  router.get(constants.USER.GET_USER_BY_EMAIL, handleGetUserByEmail);
   return router;
 }

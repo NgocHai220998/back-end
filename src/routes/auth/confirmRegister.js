@@ -2,11 +2,12 @@ const userModel = require('../../models/userModel.js');
 
 module.exports = (req, res) => {
     if (req.body.token) {
+        // confirm to register
         userModel.confirmEmail(req.body.token).then((result) => {
             if (result.code == 200) {
                 // console.log(result.data);
                 res.json({
-                    code: 200,
+                    code: 200, // Ok
                     title: 'Success',
                     data: {
                         message: 'Confirm email success.',
@@ -14,7 +15,7 @@ module.exports = (req, res) => {
                 })
             } else if (result.code == 421) {
                 res.json({
-                    code: 421,
+                    code: 421, // err
                     title: 'Error',
                     data: {
                         message: 'Confirm email fail'
@@ -22,7 +23,7 @@ module.exports = (req, res) => {
                 })
             } else if (result.code == 404) {
                 res.json({
-                    code: 404,
+                    code: 404, // User not found
                     title: 'Error',
                     data: {
                         message: 'User not found'
@@ -37,7 +38,7 @@ module.exports = (req, res) => {
             code: 430,
             title: 'Error',
             data: {
-                message: 'Token is required'
+                message: 'Token is a required field'
             }
         })
     }

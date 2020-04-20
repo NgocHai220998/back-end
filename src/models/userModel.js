@@ -7,27 +7,122 @@ const userSchema = new Schema({
     password: String,
     userID: String,
     email: String,
-    srcAvatar: String,
-    information: {
-        name: {
-            firstName: String,
-            lastName: String
+    profile: {
+        rank: {
+            type: Number,
+            default: 2020
         },
-        university: String,
-        birthday: {
-            date: String,
-            month: String,
-            year: String
+        famePoint: {
+            type: Number,
+            default: 0
         },
-        address: {
-            city: String,
-            country: String
+        money: {
+            type: Number,
+            default: 2000
+        },
+        exp: {
+            type: Number,
+            default: 0
+        },
+        diamond: {
+            type: Number,
+            default: 0
+        },
+        level: {
+            type: Number,
+            default: 1
+        },
+        technicalPoint: {
+            index: {
+                type: Number,
+                default: 0
+            },
+            martialArt: {
+                type: Number,
+                default: 0
+            },
+            avoid: {
+                type: Number,
+                default: 0
+            },
+            propUp: {
+                type: Number,
+                default: 0
+            },
+            critical: {
+                type: Number,
+                default: 0
+            },
+            hp: {
+                type: Number,
+                default: 0
+            },
+            armor: {
+                type: Number,
+                default: 0
+            }
+        },
+        expNextLevel: {
+            type: Number,
+            default: 200
+        },
+        otherInformation: {
+            maxGotoLearn: {
+                type: Number,
+                default: 3
+            },
+            maxFight: {
+                type: Number,
+                default: 10
+            },
+            maxRobGotoLearn: {
+                type: Number,
+                default: 5
+            },
+            isGotoLearn: {
+                type: Boolean,
+                default: false
+            }
         }
     },
     isConfirmbyEmail: {
         type: Boolean,
         default: false
-    }
+    },
+    isCreateMain: {
+        type: Boolean,
+        default: false
+    },
+    main: {
+        userName: String,
+        kind: String,
+        martialArt: Number,
+        avoid: Number,
+        propUp: Number,
+        critical: Number,
+        hp: Number,
+        armor: Number,
+        position: {
+            type: Number,
+            default: 2
+        },
+        srcImage: String
+    },
+    pets: [{
+        userName: String,
+        kind: String,
+        martialArt: Number,
+        avoid: Number,
+        propUp: Number,
+        critical: Number,
+        hp: Number,
+        armor: Number,
+        position: {
+            type: Number,
+            default: -1
+        },
+        srcImage: String
+    }]
 })
 
 const users = mongoose.model('user', userSchema);
@@ -40,16 +135,19 @@ function createUser(user) {
     return new Promise((resolve, reject) => {
         users.create(user, (err, result) => {
             if (err) {
+                resolve({
+                    code: 404
+                  })
                 reject(new Error('Error: create user'));
             } else {
                 if (result) {
                     resolve({
-                        code: 200,
+                        code: 200, // Successfully create new user
                         data: result
                     })
                 } else {
                     resolve({
-                        code: 420
+                        code: 420 // Error
                     })
                 }
             }
@@ -58,23 +156,26 @@ function createUser(user) {
 }
 
 /**
- * 
+ * @function: to valid email
  * @param {String} email 
  */
 function validEmail(email) {
     return new Promise((resolve, reject) => {
         users.findOne({ email: email }, (err, result) => {
             if (err) {
+                resolve({
+                    code: 404
+                  })
                 reject(new Error('Error: valid email'));
             } else {
                 if (result) {
                     resolve({
-                        code: 401,
+                        code: 401, // Email was registered
                         data: result
                     });
                 } else {
                     resolve({
-                        code: 405
+                        code: 200 // Email is valid
                     })
                 }
             }
@@ -83,176 +184,68 @@ function validEmail(email) {
 }
 
 /**
- * 
- * @param {req.body} body 
+ * @function: confirm to register
+ * @param {*} _token 
  */
-function updateProfile(body) {
-    return new Promise((resolve, reject) => {
-        token.verify(body.token).then((data) => {
-            users.findOne({ email: data.user.email }, (err, user) => {
-                if (err) {
-                    reject(new Error('Error: update profile'));
-                } else {
-                    if (user) {
-                        user.information.university = body.information.university;
-                        user.information.birthday.date = body.information.birthday.date;
-                        user.information.birthday.month = body.information.birthday.month;
-                        user.information.birthday.year = body.information.birthday.year;
-                        user.information.address.city = body.information.address.city;
-                        user.information.address.country = body.information.address.country;
-                        user.save((err, result) => {
-                            if (err) {
-                                reject(new Error('Error: update profile'));
-                            } else {
-                                if (result) {
-                                    resolve({
-                                        code: 200,
-                                        data: result
-                                    });
-                                } else {
-                                    resolve({
-                                        code: 421
-                                    })
-                                }
-                            }
-                        })
-                    } else {
-                        resolve({
-                            code: 404
-                        })
-                    }
-                }
-            })
-        }).catch((err) => {
-            console.log(err);
-            reject(new Error('Something went Error...'));
-        })
-    })
-}
 
 function confirmEmail(_token) {
     return new Promise((resolve, reject) => {
+        // get information from token
         token.verify(_token).then((data) => {
             users.findOne({ email: data.email }, (err, result) => {
                 if (err) {
+                    resolve({
+                        code: 404
+                      })
                     reject(new Error('Error: confirm email'));
                 } else {
                     if (result) {
-                        result.isConfirmbyEmail = true;
+                        result.isConfirmbyEmail = true; // to confirm
                         result.save((err, newUser) => {
                             if (err) {
-                                console.log(err);
+                                resolve({
+                                code: 404
+                                })
                                 reject(new Error('Error: confirm email'));
                             } else {
                                 if (newUser) {
                                     resolve({
-                                        code: 200,
+                                        code: 200, // confirm success
                                         data: newUser
                                     })
                                 } else {
                                     resolve({
-                                        code: 421
+                                        code: 421 // Err
                                     })
                                 }
                             }
                         });
                     } else {
                         resolve({
-                            code: 404
+                            code: 404 // err
                         })
                     }
                 }
             });
         }).catch((err) => {
-            console.log(err);
+            resolve({
+                code: 404
+            })
             reject(new Error('Somthing went Error!'));
         })
     });
 }
-
-function changeAvatar(body) {
-    return new Promise((resolve, reject) => {
-        token.verify(body.token).then((data) => {
-            users.findOne({ email: data.user.email }, (err, user) => {
-                if (err) {
-                    console.log(err);
-                    reject(new Error('Error: change avatar'));
-                } else {
-                    if (user) {
-                        user.srcAvatar = body.srcAvatar;
-                        user.save((err, result) => {
-                            if (err) {
-                                console.log(err);
-                                reject(new Error('Error: change avatar'));
-                            } else {
-                                if (result) {
-                                    resolve({
-                                        code: 200,
-                                        data: result
-                                    })
-                                } else {
-                                    resolve({
-                                        code: 421
-                                    })
-                                }
-                            }
-                        })
-                    } else {
-                        resolve({
-                            code: 404
-                        })
-                    }
-
-                }
-            })
-        }).catch((err) => {
-            console.log(err + '');
-            reject(new Error('Something went Error...'));
-        })
-    });
-}
-
-function changePassword(body) {
-    return new Promise((resolve, reject) => {
-        token.verify(body.token).then((data) => {
-            users.findOne({ email: data.user.email }, (err, user) => {
-                if (err) {
-                    console.log(err);
-                    reject(new Error('Error: change password'));
-                } else {
-                    if (user) {
-                        if (user.emailCode == body.emailCode) {
-                            user.password = body.password;
-                            user.save((error, result) => {
-                                if (error) {
-                                    console.log(error);
-                                    reject(new Error('Something went error'));
-                                } else {
-                                    if (result) {
-                                        resolve(result);
-                                    } else {
-                                        console.log('Something went error!')
-                                    }
-                                }
-                            })
-                        } else {
-                            resolve({ result: false });
-                        }
-                    } else {
-                        console.log('Something went error')
-                    }
-
-                }
-            })
-        })
-    })
-}
-
+/**
+ * @function: Change password
+ * @param {*} body 
+ */
 function forgotPassword(body) {
     return new Promise((resolve, reject) => {
         users.findOne({ email: body.email }, (err, user) => {
             if (err) {
-                console.log(err);
+                resolve({
+                    code: 404
+                  })
                 reject(new Error('Something went error'));
             } else {
                 if (user) {
@@ -260,17 +253,26 @@ function forgotPassword(body) {
                         user.password = body.password;
                         user.save((error, result) => {
                             if (error) {
-                                console.log(error);
+                                resolve({
+                                    code: 404
+                                  })
                                 reject(new Error('Something went error'));
                             } else {
-                                resolve(result);
+                                resolve({
+                                    result: result,
+                                    code: 200 // Okie
+                                });
                             }
                         })
                     } else {
-                        resolve({ result: false });
+                        resolve({ 
+                            code: 401, // code is not match
+                        });
                     }
                 } else {
-                    console.log('Something went error')
+                    resolve({ 
+                        code: 404, // code is not match
+                    });
                 }
 
             }
@@ -278,6 +280,10 @@ function forgotPassword(body) {
     })
 }
 
+/**
+ * @function: send a code to check user
+ * @param : data 
+ */
 function setEmailCode(data) {
     users.findOne({ email: data.email }, (err, user) => {
         if (err) {
@@ -307,20 +313,27 @@ function setEmailCode(data) {
     })
 }
 
-function getInfoUserByUserID(userID) {
+/**
+ * @function: get info an user by UserID
+ * @param: userID 
+ */
+function getInfoUserByEmail(email) {
     return new Promise((resolve, reject) => {
-        users.findOne({ userID: userID }, (err, user) => {
+        users.findOne({ userID: email }, (err, user) => {
             if (err) {
+                resolve({
+                    code: 404
+                  })
                 reject(new Error('Error: get info user by userID'));
             } else {
                 if (user) {
                     resolve({
                         code: 200,
                         data: {
-                            information: user.information,
-                            email: user.email,
-                            userID: user.userID,
-                            srcAvatar: user.srcAvatar
+                            email: newUser.email,
+                            main: newUser.main,
+                            pets: newUser.pets,
+                            userID: newUser.userID
                         }
                     })
                 } else {
@@ -333,17 +346,207 @@ function getInfoUserByUserID(userID) {
     })
 }
 
+/**
+ * @function: create main to first login 
+ * @param: data 
+ */
+function createMain(data) {
+    return new Promise((resolve, reject) => {
+        token.verify(data.token).then((res) => {
+            users.findOne({ email: res.user.email }, (err, result) => {
+                if (err) {
+                    resolve({
+                        code: 404
+                      })
+                    reject(new Error('err: createMain'))
+                } else {
+                    if (result) { // Tim thay user
+                        result.isCreateMain = true
+                        result.main = {
+                            ...result.main,
+                            ...data.main
+                        }
+                        result.save((error, newUser) => {
+                            if (error) {
+                                resolve({
+                                    code: 404
+                                  })
+                                reject(new Error('Err Create Main save'))
+                            } else if (newUser) {
+                                resolve({
+                                    code: 200,
+                                    data: {
+                                        email: newUser.email,
+                                        userID: newUser.userID,
+                                        main: newUser.main,
+                                        pets: newUser.pets,
+                                        token: data.token,
+                                        profile: newUser.profile
+                                    }
+                                })
+                            } else {
+                                resolve({
+                                    code: 403 // Error cant not save user
+                                })
+                            }
+                        })
+                    } else {
+                        resolve({
+                            code: 404 // Khong tim thay user
+                        })
+                    }
+                }
+            })
+        })
+    })
+}
 
+/**
+ * 
+ * @param : data 
+ */
+function updatePosition (data) {
+    return new Promise((resolve, reject) => {
+        token.verify(data.token).then((dataToken) => {
+            users.findOne({ email: dataToken.user.email }, (err, result) => {
+                if (err) {
+                    resolve({
+                        code: 404
+                      })
+                    reject(new Error('Somthing err in Update position'))
+                } else if (result) {
+                    result.main.position = data.main.position
+                    if (result.pets && data.pets) {
+                        for (let i = 0; i < result.pets.length; ++i) {
+                            for (let j = 0; j < data.pets.length; ++j) {
+                                if (data.pets[j].kind === result.pets[i].kind) {
+                                    result.pets[i].position = data.pets[j].position
+                                }
+                            }
+                        }
+                    }
+                    result.save((err, res) => {
+                        if (err) {
+                            resolve({
+                                code: 404
+                              })
+                            reject(new Error('err save in updataPosition'))
+                        } else if (res) {
+                            resolve({
+                                code: 200,
+                                main: res.main,
+                                pets: res.pets
+                            })
+                        } else {
+                            resolve({
+                                code: 404
+                            })
+                        }
+                    })
+                } else {
+                    resolve({
+                        code: 404
+                    })
+                }
+            })
+        })
+    })
+}
+
+
+/**
+ * 
+ */
+function getUserByEmail (email) {
+    return new Promise((resolve, reject) => {
+        users.findOne({ email, email }, (err, data) => {
+            if (err) {
+                resolve({
+                    code: 404
+                  })
+                reject(new Error('somthing err in getUserByEmail'))
+            } else {
+                if (data) {
+                    resolve({
+                        code: 200,
+                        user: {
+                            main: data.main,
+                            pets: data.pets,
+                            email: data.email,
+                            profile: data.profile
+                        }
+                    })
+                } else {
+                    resolve({
+                        code: 404 // Khong tim thay user nao
+                    })
+                }
+            }
+        })
+    })
+}
+
+
+function updateProfile (data) {
+    return new Promise((resolve, reject) => {
+        token.verify(data.token).then((dataToken) => {
+            if (dataToken) {
+                users.findOne({ email: res.user.email }, (err, user) => {
+                    if (err) {
+                        resolve({
+                            code: 404,
+                            message: 'User not found'
+                        })
+                    } else if (user) {
+                        user.profile = {
+                            ...user.profile,
+                            ...data.profile
+                        }
+                        user.save((err, updatedUser) => {
+                            if (err) {
+                                resolve({
+                                    code: 404,
+                                    message: 'user save is err'
+                                })
+                            } else if (updatedUser) {
+                                resolve({
+                                    code: 200,
+                                    message: 'Update profile success!'
+                                })
+                            } else {
+                                resolve({
+                                    code: 404,
+                                    message: 'user save is err'
+                                })
+                            }
+                        })
+                    } else {
+                        resolve({
+                            code: 404,
+                            message: 'User err'
+                        })
+                    }
+                })
+            } else {
+                resolve({
+                    code: 404,
+                    message: 'Token err'
+                })
+            }
+        })
+    })
+}
 
 module.exports = {
     createUser,
     validEmail,
     users,
-    updateProfile,
     confirmEmail,
-    changeAvatar,
-    changePassword,
     forgotPassword,
     setEmailCode,
-    getInfoUserByUserID
+    getInfoUserByEmail,
+    createMain,
+    updatePosition,
+    getUserByEmail,
+    updateProfile
 }
