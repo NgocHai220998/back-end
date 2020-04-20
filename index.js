@@ -9,19 +9,19 @@ app.use(morgan('dev'))
 
 const cors = require('cors')
 const whitelist = ['http://localhost:8080', 'https://game-language.herokuapp.com/', undefined, 'null']
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
-}
-// var corsOptions = {
-//   origin: '*',
-//   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (whitelist.indexOf(origin) !== -1) {
+//       callback(null, true)
+//     } else {
+//       callback(new Error('Not allowed by CORS'))
+//     }
+//   }
 // }
+var corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
 app.use(cors(corsOptions))
 
 app.use(bodyParser.urlencoded({extended: true}));
