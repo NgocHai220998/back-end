@@ -7,7 +7,8 @@ module.exports = () => {
     if (process.env.NODE_ENV === 'production') {
         mongoose.connect(`mongodb://${configDatabase.username}:${configDatabase.password}@ds157829.mlab.com:57829/back-end`, {useNewUrlParser : true});
     } else {
-        mongoose.connect(url, { useNewUrlParser: true })
+        // mongoose.connect(url, { useNewUrlParser: true })
+        mongoose.connect(`mongodb://${configDatabase.username}:${configDatabase.password}@ds157829.mlab.com:57829/back-end`, {useNewUrlParser : true});
     }
 }
 
