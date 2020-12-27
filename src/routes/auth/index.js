@@ -21,5 +21,6 @@ module.exports = () => {
   router.post(constants.USER.FORGOT_PASSWORD, handleForgotPassword); // Error
   router.put(constants.USER.UPDATE_POSITION, handleUpdatePosition);
   router.get(constants.USER.GET_USER_BY_EMAIL, handleGetUserByEmail);
+
   return router;
 }

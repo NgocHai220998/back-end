@@ -5,9 +5,10 @@ let mongoose = require("mongoose");
 
 module.exports = () => {
     if (process.env.NODE_ENV === 'production') {
-        mongoose.connect(`mongodb://${configDatabase.username}:${configDatabase.password}@ds157829.mlab.com:57829/back-end`, {useNewUrlParser : true});
+        mongoose.connect(`mongodb+srv://hainn:ngochai220998@cluster0.vjptx.mongodb.net/Cluster0?retryWrites=true&w=majority`);
+        
     } else {
-        mongoose.connect(url, { useNewUrlParser: true })
+        mongoose.connect(`mongodb+srv://hainn:ngochai220998@cluster0.vjptx.mongodb.net/Cluster0?retryWrites=true&w=majority`);
     }
 }
 
